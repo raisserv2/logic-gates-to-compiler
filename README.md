@@ -2,7 +2,7 @@
 
 A bottom-up build of a computer, from individual logic gates to a working compiler for a
 high-level language. Completed as the three assignments for **DA2304 — Introduction to
-Computer Systems** (IIT Madras, Dept. of Data Science & AI).
+Computer Systems** (IIT Madras).
 
 The repo traces the full nand2tetris arc: **logic gates → arithmetic & memory hardware →
 VM translator → Jack compiler.** Each layer's output is the next layer's input, so the
