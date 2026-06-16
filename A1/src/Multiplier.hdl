@@ -1,0 +1,80 @@
+CHIP Multiplier {
+    IN a[16], b[16];
+    OUT out[16];
+    PARTS:
+        And16Bit1(a[0..15]=a[0..15], b=b[0], out=pp0);
+        And16Bit1(a[0]=false,
+        a[1..15]=a[0..14],
+        b=b[1], out=pp1);
+        And16Bit1(a[0..1]=false,
+        a[2..15]=a[0..13],
+        b=b[2], out=pp2);
+        And16Bit1(a[0..2]=false,
+        a[3..15]=a[0..12],
+        b=b[3], out=pp3);
+        And16Bit1(a[0..3]=false,
+        a[4..15]=a[0..11],
+        b=b[4], out=pp4);
+        And16Bit1(a[0..4]=false,
+        a[5..15]=a[0..10],
+        b=b[5], out=pp5);
+        And16Bit1(a[0..5]=false,
+        a[6..15]=a[0..9],
+        b=b[6], out=pp6);
+        And16Bit1(a[0..6]=false,
+        a[7..15]=a[0..8],
+        b=b[7], out=pp7);
+        And16Bit1(a[0..7]=false,
+        a[8..15]=a[0..7],
+        b=b[8], out=pp8);
+        And16Bit1(a[0..8]=false,
+        a[9..15]=a[0..6],
+        b=b[9], out=pp9);
+        And16Bit1(a[0..9]=false,
+        a[10..15]=a[0..5],
+        b=b[10], out=pp10);
+        And16Bit1(a[0..10]=false,
+        a[11..15]=a[0..4],
+        b=b[11], out=pp11);
+        And16Bit1(a[0..11]=false,
+        a[12..15]=a[0..3],
+        b=b[12], out=pp12);
+        And16Bit1(a[0..12]=false,
+        a[13..15]=a[0..2],
+        b=b[13], out=pp13);
+        And16Bit1(a[0..13]=false,
+        a[14..15]=a[0..1],
+        b=b[14], out=pp14);
+        And16Bit1(a[0..14]=false,
+        a[15]=a[0],
+        b=b[15], out=pp15);
+        CSA16(a=pp0, b=pp1, c=pp2, s=s0a, co=cr0a);
+        ShiftLeft1(in=cr0a, out=c0a);
+        CSA16(a=pp3, b=pp4, c=pp5, s=s0b, co=cr0b);
+        ShiftLeft1(in=cr0b, out=c0b);
+        CSA16(a=pp6, b=pp7, c=pp8, s=s0c, co=cr0c);
+        ShiftLeft1(in=cr0c, out=c0c);
+        CSA16(a=pp9, b=pp10, c=pp11, s=s0d, co=cr0d);
+        ShiftLeft1(in=cr0d, out=c0d);
+        CSA16(a=pp12, b=pp13, c=pp14, s=s0e, co=cr0e);
+        ShiftLeft1(in=cr0e, out=c0e);
+        CSA16(a=s0a, b=c0a, c=s0b, s=s1a, co=cr1a);
+        ShiftLeft1(in=cr1a, out=c1a);
+        CSA16(a=c0b, b=s0c, c=c0c, s=s1b, co=cr1b);
+        ShiftLeft1(in=cr1b, out=c1b);
+        CSA16(a=s0d, b=c0d, c=s0e, s=s1c, co=cr1c);
+        ShiftLeft1(in=cr1c, out=c1c);
+        CSA16(a=s1a, b=c1a, c=s1b, s=s2a, co=cr2a);
+        ShiftLeft1(in=cr2a, out=c2a);
+        CSA16(a=c1b, b=s1c, c=c1c, s=s2b, co=cr2b);
+        ShiftLeft1(in=cr2b, out=c2b);
+        CSA16(a=s2a, b=c2a, c=s2b, s=s3a, co=cr3a);
+        ShiftLeft1(in=cr3a, out=c3a);
+        CSA16(a=c2b, b=c0e, c=pp15, s=s3b, co=cr3b);
+        ShiftLeft1(in=cr3b, out=c3b);
+        CSA16(a=s3a, b=c3a, c=s3b, s=s4a, co=cr4a);
+        ShiftLeft1(in=cr4a, out=c4a);
+        CSA16(a=s4a, b=c4a, c=c3b, s=s5a, co=cr5a);
+        ShiftLeft1(in=cr5a, out=c5a);
+        CLA16(a=s5a, b=c5a, out=out);
+}

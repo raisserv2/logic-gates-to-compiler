@@ -1,0 +1,7 @@
+CHIP Bit {
+    IN in, load;
+    OUT out;
+    PARTS:
+        Mux(a=feedback, b=in, sel=load, out=muxout);
+        DFF(in=muxout, out=feedback, out=out);
+}

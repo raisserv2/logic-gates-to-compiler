@@ -1,0 +1,8 @@
+CHIP Counter1Bit {
+    IN initialize;
+    OUT out;
+    PARTS:
+        Not(in=current, out=toggled);
+        Mux(a=toggled, b=false, sel=initialize, out=next);
+        Bit(in=next, load=true, out=current, out=out);
+}

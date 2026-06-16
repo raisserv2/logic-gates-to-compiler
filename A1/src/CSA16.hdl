@@ -1,0 +1,21 @@
+CHIP CSA16 {
+    IN a[16], b[16], c[16];
+    OUT s[16], co[16];
+    PARTS:
+        FullAdder(a=a[0],  b=b[0],  c=c[0],  sum=s[0],  carry=co[0]);
+        FullAdder(a=a[1],  b=b[1],  c=c[1],  sum=s[1],  carry=co[1]);
+        FullAdder(a=a[2],  b=b[2],  c=c[2],  sum=s[2],  carry=co[2]);
+        FullAdder(a=a[3],  b=b[3],  c=c[3],  sum=s[3],  carry=co[3]);
+        FullAdder(a=a[4],  b=b[4],  c=c[4],  sum=s[4],  carry=co[4]);
+        FullAdder(a=a[5],  b=b[5],  c=c[5],  sum=s[5],  carry=co[5]);
+        FullAdder(a=a[6],  b=b[6],  c=c[6],  sum=s[6],  carry=co[6]);
+        FullAdder(a=a[7],  b=b[7],  c=c[7],  sum=s[7],  carry=co[7]);
+        FullAdder(a=a[8],  b=b[8],  c=c[8],  sum=s[8],  carry=co[8]);
+        FullAdder(a=a[9],  b=b[9],  c=c[9],  sum=s[9],  carry=co[9]);
+        FullAdder(a=a[10], b=b[10], c=c[10], sum=s[10], carry=co[10]);
+        FullAdder(a=a[11], b=b[11], c=c[11], sum=s[11], carry=co[11]);
+        FullAdder(a=a[12], b=b[12], c=c[12], sum=s[12], carry=co[12]);
+        FullAdder(a=a[13], b=b[13], c=c[13], sum=s[13], carry=co[13]);
+        FullAdder(a=a[14], b=b[14], c=c[14], sum=s[14], carry=co[14]);
+        FullAdder(a=a[15], b=b[15], c=c[15], sum=s[15], carry=co[15]);
+}

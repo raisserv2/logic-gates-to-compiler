@@ -1,0 +1,12 @@
+CHIP CLA4 {
+    IN a[4], b[4], cin;
+    OUT s[4], gg, gp;
+    PARTS:
+        CLA2(a=a[0..1], b=b[0..1], cin=cin, s=s[0..1], gg=gg0, gp=gp0);
+        And(a=gp0, b=cin, out=gp0cin);
+        Or(a=gg0, b=gp0cin, out=cmid);
+        CLA2(a=a[2..3], b=b[2..3], cin=cmid, s=s[2..3], gg=gg1, gp=gp1);
+        And(a=gp1, b=gg0, out=gp1gg0);
+        Or(a=gg1, b=gp1gg0, out=gg);
+        And(a=gp1, b=gp0, out=gp);
+}

@@ -1,0 +1,16 @@
+CHIP CLA2 {
+    IN a[2], b[2], cin;
+    OUT s[2], gg, gp;
+    PARTS:
+        And(a=a[0], b=b[0], out=g0);
+        And(a=a[1], b=b[1], out=g1);
+        Xor(a=a[0], b=b[0], out=p0);
+        Xor(a=a[1], b=b[1], out=p1);
+        And(a=p0, b=cin, out=p0cin);
+        Or(a=g0, b=p0cin, out=c1);
+        Xor(a=p0, b=cin, out=s[0]);
+        Xor(a=p1, b=c1,  out=s[1]);
+        And(a=p1, b=g0, out=p1g0);
+        Or(a=g1, b=p1g0, out=gg);
+        And(a=p1, b=p0, out=gp);
+}

@@ -1,0 +1,49 @@
+CHIP ALU {
+    IN
+        x[16], y[16],
+        zx, nx, zy, ny, f, no;
+    OUT
+    out[16], zr, ng;
+
+    PARTS:
+
+        Mux16(a=x, b=false, sel=zx, out=x1);
+        Not16(in=x1, out=notx1);
+        Mux16(a=x1, b=notx1, sel=nx, out=x2);
+
+        Mux16(a=y, b=false, sel=zy, out=y1);
+        Not16(in=y1, out=noty1);
+        Mux16(a=y1, b=noty1, sel=ny, out=y2);
+
+        Add16(a=x2, b=y2, out=xplusy);
+        And16(a=x2, b=y2, out=xandy);
+        Mux16(a=xandy, b=xplusy, sel=f, out=fout);
+
+        Not16(in=fout, out=notfout);
+        Mux16(a=fout, b=notfout, sel=no, out=aluOut);
+
+        Multiplier(a=x, b=y, out=mulOut);
+
+        Not(in=zx, out=nzx);
+        Not(in=nx, out=nnx);
+        Not(in=zy, out=nzy);
+        Not(in=ny, out=nny);
+        Not(in=f,  out=nf);
+
+        And(a=nzx, b=nnx, out=det0);
+        And(a=det0, b=nzy, out=det1);
+        And(a=det1, b=nny, out=det2);
+        And(a=det2, b=nf,  out=det3);
+        And(a=det3, b=no,  out=isMul);
+
+        Mux16(a=aluOut, b=mulOut, sel=isMul,
+    out=out,
+    out[0..7]=finalLow,
+    out[8..15]=finalHigh,
+    out[15]=ng);
+
+        Or8Way(in=finalLow, out=anyLow);
+        Or8Way(in=finalHigh, out=anyHigh);
+        Or(a=anyLow, b=anyHigh, out=notZero);
+        Not(in=notZero, out=zr);
+}

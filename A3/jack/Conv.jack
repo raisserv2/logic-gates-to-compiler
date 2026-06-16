@@ -1,0 +1,106 @@
+class Conv {
+    static Array ArrayFilter;
+    static int stride;
+
+    field Array ArrayInput;
+    field Array ArrayOutput;
+    field int ArraySize;
+    field int outputDim;
+
+    constructor Conv new(int N) {
+        let ArraySize = N;
+        let stride = 1;
+        let ArrayFilter = Array.new(9);
+        let ArrayInput = Array.new(N * N);
+        let outputDim = calcOutputDim();
+        if (outputDim < 1) {
+            do Sys.error(1);
+        }
+
+        let ArrayOutput = Array.new(outputDim * outputDim);
+        return this;
+    }
+
+    method void initFilter(Array values) {
+        var int i;
+        let i = 0;
+        while (i < 9) {
+            let ArrayFilter[i] = values[i];
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method void getArrayInput(Array input, int size) {
+        var int i;
+        let i = 0;
+        while (i < (size * size)) {
+            let ArrayInput[i] = input[i];
+            let i = i + 1;
+        }
+        let ArraySize = size;
+        return;
+    }
+
+    method int calcOutputDim() {
+        return ((ArraySize - 3) / stride) + 1;
+    }
+
+    method void conv2d() {
+        var int outRow, outCol, fRow, fCol;
+        var int inRow, inCol;
+        var int sum, k;
+
+        let k = 0;
+        let outRow = 0;
+
+        while (outRow < outputDim) {
+            let outCol = 0;
+            while (outCol < outputDim) {
+                let sum = 0;
+                let fRow = 0;
+
+                while (fRow < 3) {
+                    let fCol = 0;
+                    while (fCol < 3) {
+                        let inRow = (outRow * stride) + fRow;
+                        let inCol = (outCol * stride) + fCol;
+                        let sum = sum + (ArrayInput[(inRow * ArraySize) + inCol] * ArrayFilter[(fRow * 3) + fCol]);
+                        let fCol = fCol + 1;
+                    }
+                    let fRow = fRow + 1;
+                }
+
+                let ArrayOutput[k] = sum;
+                let k = k + 1;
+                let outCol = outCol + 1;
+            }
+            let outRow = outRow + 1;
+        }
+        return;
+    }
+
+    method void printOutput() {
+        var int i, j;
+        let i = 0;
+        while (i < outputDim) {
+            let j = 0;
+            while (j < outputDim) {
+                do Output.printInt(ArrayOutput[(i * outputDim) + j]);
+                do Output.printChar(32);
+                let j = j + 1;
+            }
+            do Output.println();
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method void dispose() {
+        do ArrayFilter.dispose();
+        do ArrayInput.dispose();
+        do ArrayOutput.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+}

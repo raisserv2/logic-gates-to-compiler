@@ -1,0 +1,7 @@
+// SimpleAdd.vm
+// Pushes two constants and adds them.
+// Expected: RAM[0] = 257 (SP), RAM[256] = 15
+
+push constant 7
+push constant 8
+add

@@ -1,0 +1,124 @@
+// MAC.vm — Matrix Multiply-Accumulate: Y = W*X + B
+// Implements Approach B (ROWXCOL subroutine style) for a 2x2 demo.
+//
+// Memory Layout (RAM):
+//   W stored at base 100: [w00, w01, w10, w11]
+//   X stored at base 200: [x00, x01, x10, x11]
+//   B stored at base 300: [b0, b1]   (column bias vector)
+//   Y stored at base 400: [y00, y01, y10, y11]
+//   Sanity flag at RAM[500]: 1=ok, -1=error
+//
+// This .vm file demonstrates the MAC flow at the VM level.
+// Actual matrix data would be loaded by the OS/caller; here
+// we set up small literal values to keep it self-contained.
+
+// ── Load W (2x2) at addresses 100–103 ─────────────────────────────────
+push constant 1   // w[0][0]
+pop static 0
+push constant 2   // w[0][1]
+pop static 1
+push constant 3   // w[1][0]
+pop static 2
+push constant 4   // w[1][1]
+pop static 3
+
+// ── Load X (2x2) at addresses 104–107 ─────────────────────────────────
+push constant 5   // x[0][0]
+pop static 4
+push constant 6   // x[0][1]
+pop static 5
+push constant 7   // x[1][0]
+pop static 6
+push constant 8   // x[1][1]
+pop static 7
+
+// ── Load B (2x1) at addresses 108–109 ─────────────────────────────────
+push constant 10  // b[0]
+pop static 8
+push constant 20  // b[1]
+pop static 9
+
+// ── Sanity check: set flag to 1 (dimensions compatible by construction) ─
+push constant 1
+pop static 10     // RAM[flag] = 1  →  ok
+
+// ── Compute Y[0][0] = w00*x00 + w01*x10 + b[0] ───────────────────────
+push static 0     // w00 = 1
+push static 4     // x00 = 5
+call MAC.multiply 2
+push static 1     // w01 = 2
+push static 6     // x10 = 7
+call MAC.multiply 2
+add               // 5 + 14 = 19
+push static 8     // b[0] = 10
+add               // 19 + 10 = 29
+pop static 11     // Y[0][0] = 29
+
+// ── Compute Y[0][1] = w00*x01 + w01*x11 + b[0] ───────────────────────
+push static 0     // w00 = 1
+push static 5     // x01 = 6
+call MAC.multiply 2
+push static 1     // w01 = 2
+push static 7     // x11 = 8
+call MAC.multiply 2
+add               // 6 + 16 = 22
+push static 8     // b[0] = 10
+add               // 22 + 10 = 32
+pop static 12     // Y[0][1] = 32
+
+// ── Compute Y[1][0] = w10*x00 + w11*x10 + b[1] ───────────────────────
+push static 2     // w10 = 3
+push static 4     // x00 = 5
+call MAC.multiply 2
+push static 3     // w11 = 4
+push static 6     // x10 = 7
+call MAC.multiply 2
+add               // 15 + 28 = 43
+push static 9     // b[1] = 20
+add               // 43 + 20 = 63
+pop static 13     // Y[1][0] = 63
+
+// ── Compute Y[1][1] = w10*x01 + w11*x11 + b[1] ───────────────────────
+push static 2     // w10 = 3
+push static 5     // x01 = 6
+call MAC.multiply 2
+push static 3     // w11 = 4
+push static 7     // x11 = 8
+call MAC.multiply 2
+add               // 18 + 32 = 50
+push static 9     // b[1] = 20
+add               // 50 + 20 = 70
+pop static 14     // Y[1][1] = 70
+
+// ── Infinite loop (program end) ───────────────────────────────────────
+label END
+goto END
+
+// ── MAC.multiply: multiplies two numbers via repeated addition ────────
+// Arguments: arg[0]=a, arg[1]=b   Returns: a*b
+function MAC.multiply 2
+  // local 0 = result accumulator
+  // local 1 = counter
+  push constant 0
+  pop local 0       // result = 0
+  push argument 1
+  pop local 1       // counter = b
+
+  label MULT_LOOP
+    push local 1
+    push constant 0
+    eq
+    if-goto MULT_DONE   // if counter == 0, done
+    push local 0
+    push argument 0
+    add
+    pop local 0         // result += a
+    push local 1
+    push constant 1
+    sub
+    pop local 1         // counter--
+    goto MULT_LOOP
+
+  label MULT_DONE
+    push local 0
+    return
